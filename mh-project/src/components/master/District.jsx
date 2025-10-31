@@ -156,9 +156,9 @@ function District() {
                                 </thead>
                                 <tbody>
                                     {districts.length > 0 ? (
-                                        districts.map((d) => (
+                                        districts.map((d,index) => (
                                             <tr key={d.id}>
-                                                <td>{d.id}</td>
+                                                <td>{index+1}</td>
                                                 <td>{d.dist_name}</td>
                                                 <td>{d.regional_name}</td>
                                                 <td>

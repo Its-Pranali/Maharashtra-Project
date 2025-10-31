@@ -1,4 +1,5 @@
-.body-class,.container-scroller {
+.body-class,
+.container-scroller {
     height: 100vh;
 }
 
@@ -34,15 +35,20 @@
 
 
 body {
-  background-color: #f8f9fc;
-  font-family: "Poppins", sans-serif;
-  background-image:url('./paralex-bg.png');
+    background-color: #f8f9fc;
+    font-family: "Poppins", sans-serif;
+    background-image: url('./paralex-bg.png');
 }
 
 .sidebar-link:hover {
-  background-color: #eaf0ff !important;
-  border-radius: 8px;
+    background-color: #eaf0ff !important;
+    border-radius: 8px;
 }
-.card-light-blue{
-    background-color:#d3e3fd !important;
+
+.card-light-blue {
+    background: linear-gradient(90deg, rgb(184 201 229) 0%, rgb(237 242 250) 50%, rgb(189 205 231) 100%) !important;
+}
+
+.hover-bg:hover {
+    background-color: #edf2fa;
 }

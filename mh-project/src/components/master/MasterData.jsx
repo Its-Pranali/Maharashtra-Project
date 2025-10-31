@@ -60,7 +60,7 @@ function MasterData() {
                     </div>
 
                     <div className="col-md-3 my-2">
-                        <Link to="/master-data">
+                        <Link to="/designation">
                             <div className="card  py-4 card-light-blue">
                                 <h5>Designation</h5>
                             </div>

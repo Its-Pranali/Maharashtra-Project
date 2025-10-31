@@ -10,6 +10,7 @@ import './assets/style.css'
 import MasterData from "./components/master/MasterData";
 import District from "./components/master/District";
 import Organization from "./components/master/Organization";
+import Designation from "./components/master/Designation";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/master-data" element={<MasterData />} />
       <Route path="/district" element={<District />} />
       <Route path="/organization" element={<Organization />} />
+      <Route path="/designation" element={<Designation />} />
     </Routes>
   );
 }
