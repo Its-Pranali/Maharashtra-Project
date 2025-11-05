@@ -22,7 +22,7 @@ function Dashboard() {
           </div>
 
           <div className="col-md-3">
-            <Link to="/master-data">
+            <Link to="/ticket-details">
               <div className="card  py-4 card-light-blue">
                 <h5>Ticket Details</h5>
               </div>

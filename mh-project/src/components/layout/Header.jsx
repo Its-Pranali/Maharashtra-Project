@@ -46,9 +46,10 @@ function Header({ toggleSidebar }) {
                             <Link className="dropdown-item" to="/profile">
                                 Profile
                             </Link>
-                            <button onClick={handleLogout} className="dropdown-item text-danger">
+                            <Link className="dropdown-item text-danger" to="/">
                                 Logout
-                            </button>
+                            </Link>
+                         
                         </div>
                     )}
                 </div>

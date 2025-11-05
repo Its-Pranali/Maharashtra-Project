@@ -17,7 +17,7 @@ function District() {
     const [editingId, setEditingId] = useState(null);
 
     const [formData, setFormData] = useState({
-        dist_name: "",
+        district: "",
         regional_name: "",
     });
 
@@ -54,8 +54,8 @@ function District() {
 
     const validator = () => {
         const newErrors = {};
-        if (!formData.dist_name.trim())
-            newErrors.dist_name = "District name is required";
+        if (!formData.district.trim())
+            newErrors.district = "District name is required";
         if (!formData.regional_name.trim())
             newErrors.regional_name = "Regional name is required";
         return newErrors;
@@ -91,10 +91,11 @@ function District() {
             } else {
                 await axios.post("http://127.0.0.1:8000/api/districts", formData);
                 alert("District added successfully!");
+                window.location.reload();
             }
 
             setShowModal(false);
-            setFormData({ dist_name: "", regional_name: "" });
+            setFormData({ district: "", regional_name: "" });
             setEditingId(null);
             fetchDistricts();
         } catch (error) {
@@ -109,7 +110,7 @@ function District() {
 
     const handleEdit = (district) => {
         setFormData({
-            dist_name: district.dist_name,
+            district: district.district,
             regional_name: district.regional_name,
         });
         setEditingId(district.id);
@@ -135,7 +136,7 @@ function District() {
                     <div className="card py-3">
                         <div className="d-flex justify-content-between align-items-center">
                             <div className="card-title fw-bold fs-5">District List</div>
-                            <button className="btn btn-sm btn-primary" onClick={() => { setFormData({ dist_name: "", regional_name: "" }); setEditingId(null); setShowModal(true); }} >
+                            <button className="btn btn-sm btn-primary" onClick={() => { setFormData({ district: "", regional_name: "" }); setEditingId(null); setShowModal(true); }} >
                                 Add District
                             </button>
                         </div>
@@ -156,10 +157,10 @@ function District() {
                                 </thead>
                                 <tbody>
                                     {districts.length > 0 ? (
-                                        districts.map((d,index) => (
+                                        districts.map((d, index) => (
                                             <tr key={d.id}>
-                                                <td>{index+1}</td>
-                                                <td>{d.dist_name}</td>
+                                                <td>{index + 1}</td>
+                                                <td>{d.district}</td>
                                                 <td>{d.regional_name}</td>
                                                 <td>
                                                     <button className="btn btn-sm btn-primary me-2" onClick={() => handleEdit(d)} >
@@ -202,12 +203,12 @@ function District() {
                                     <form onSubmit={handleSubmit}>
                                         <div className="modal-body">
                                             <div className="form-group my-2">
-                                                <label htmlFor="dist_name" className="form-label">
+                                                <label htmlFor="district" className="form-label">
                                                     District Name *
                                                 </label>
-                                                <input type="text" name="dist_name" className={`form-control ${errors.dist_name ? "is-invalid" : ""}`} value={formData.dist_name} onChange={handleChange} placeholder="Enter District Name" />
-                                                {errors.dist_name && (
-                                                    <div className="invalid-feedback"> {errors.dist_name}</div>
+                                                <input type="text" name="district" className={`form-control ${errors.district ? "is-invalid" : ""}`} value={formData.district} onChange={handleChange} placeholder="Enter District Name" />
+                                                {errors.district && (
+                                                    <div className="invalid-feedback"> {errors.district}</div>
                                                 )}
                                             </div>
 

@@ -11,6 +11,9 @@ function Organization() {
     const toggleSidebar = () => setIsCollapsed((prev) => !prev);
 
     const [showModal, setShowModal] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editId, setEditId] = useState(null);
+
     const [formData, setFormData] = useState({
         org_name: "",
         regional_name: "",
@@ -18,7 +21,7 @@ function Organization() {
     const [errors, setErrors] = useState({});
     const [organizations, setOrganizations] = useState([]);
 
-    //  Fetch all organizations from API
+    //  Fetch all organizations
     const fetchOrganizations = async () => {
         try {
             const res = await axios.get("http://127.0.0.1:8000/api/organizations");
@@ -48,7 +51,7 @@ function Organization() {
         }
     }, [organizations]);
 
-    //  Validation
+    // Validation
     const validator = () => {
         const newErrors = {};
         if (!formData.org_name.trim())
@@ -70,7 +73,7 @@ function Organization() {
         });
     };
 
-    //  Handle form submit
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -81,39 +84,56 @@ function Organization() {
         }
 
         try {
-            const res = await axios.post(
-                "http://127.0.0.1:8000/api/organizations",
-                formData
-            );
+            let res;
+            if (isEditing && editId) {
+                // Update existing record
+                res = await axios.put(
+                    `http://127.0.0.1:8000/api/organizations/${editId}`,
+                    formData
+                );
+            } else {
+                // Add new record
+                res = await axios.post(
+                    "http://127.0.0.1:8000/api/organizations",
+                    formData
+                );
+                window.location.reload();
+            }
 
-            if (res.status === 201) {
-                alert(" Organization added successfully!");
+            if (res.status === 200 || res.status === 201) {
+                alert(isEditing ? "Organization updated successfully!" : "Organization added successfully!");
                 setFormData({ org_name: "", regional_name: "" });
                 setShowModal(false);
-                await fetchOrganizations(); // refresh table
-            } else {
-                alert(" Failed to save organization. Try again.");
+                setIsEditing(false);
+                setEditId(null);
+                await fetchOrganizations();
             }
         } catch (error) {
             console.error("Error saving organization:", error);
             if (error.response?.data?.errors) {
                 setErrors(error.response.data.errors);
             } else {
-                alert(" Something went wrong while saving data!");
+                alert("Something went wrong while saving data!");
             }
         }
     };
 
-    //  Edit handler (placeholder)
-    const handleEdit = (id) => {
-        alert(`Edit organization with ID: ${id}`);
+
+    const handleEdit = (org) => {
+        setFormData({
+            org_name: org.org_name,
+            regional_name: org.regional_name,
+        });
+        setEditId(org.id);
+        setIsEditing(true);
+        setShowModal(true);
     };
 
-    //  Delete handler (placeholder)
+
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this organization?")) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/organizations/${id}`);
+                await axios.delete(`http://127.0.0.1:8000/api/organizations/${id}`);
                 alert("Organization deleted successfully!");
                 fetchOrganizations();
             } catch (error) {
@@ -123,6 +143,15 @@ function Organization() {
         }
     };
 
+
+    const closeModal = () => {
+        setShowModal(false);
+        setIsEditing(false);
+        setEditId(null);
+        setFormData({ org_name: "", regional_name: "" });
+        setErrors({});
+    };
+
     return (
         <Main isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
             <div className="container-fluid px-3">
@@ -130,27 +159,21 @@ function Organization() {
                     <div className="card py-3">
                         <div className="d-flex justify-content-between align-items-center">
                             <div className="card-title fw-bold fs-5">Organization List</div>
-                            <button
-                                className="btn btn-sm btn-primary"
-                                onClick={() => setShowModal(true)}
-                            >
+                            <button className="btn btn-sm btn-primary" onClick={() => { setIsEditing(false); setFormData({ org_name: "", regional_name: "" }); setShowModal(true); }} >
                                 Add Organization
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {/*  Table */}
+
                 <div className="row mt-2">
                     <div className="card py-3">
                         <div className="table-responsive">
-                            <table
-                                id="organizationTable"
-                                className="table table-bordered table-striped table-hover table-sm"
-                            >
-                                <thead className="">
+                            <table id="organizationTable" className="table table-bordered table-striped table-hover table-sm" >
+                                <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>Sr.No</th>
                                         <th>Organization Name</th>
                                         <th>Regional Name</th>
                                         <th>Action</th>
@@ -164,16 +187,10 @@ function Organization() {
                                                 <td>{org.org_name}</td>
                                                 <td>{org.regional_name}</td>
                                                 <td>
-                                                    <button
-                                                        className="btn btn-sm btn-primary me-2"
-                                                        onClick={() => handleEdit(org.id)}
-                                                    >
+                                                    <button className="btn btn-sm btn-primary me-2" onClick={() => handleEdit(org)}>
                                                         <FaEdit />
                                                     </button>
-                                                    <button
-                                                        className="btn btn-sm btn-danger"
-                                                        onClick={() => handleDelete(org.id)}
-                                                    >
+                                                    <button className="btn btn-sm btn-danger" onClick={() => handleDelete(org.id)} >
                                                         <FaTrash />
                                                     </button>
                                                 </td>
@@ -192,23 +209,18 @@ function Organization() {
                     </div>
                 </div>
 
-                {/* ✅ Modal */}
+
                 {showModal && (
                     <>
                         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm"></div>
-                        <div
-                            className="modal fade show"
-                            style={{ display: "block", zIndex: 1050 }}
-                        >
+                        <div className="modal fade show" style={{ display: "block", zIndex: 1050 }} >
                             <div className="modal-dialog">
                                 <div className="modal-content">
                                     <div className="modal-header">
-                                        <h5 className="modal-title">Add Organization</h5>
-                                        <button
-                                            type="button"
-                                            className="btn-close"
-                                            onClick={() => setShowModal(false)}
-                                        ></button>
+                                        <h5 className="modal-title">
+                                            {isEditing ? "Edit Organization" : "Add Organization"}
+                                        </h5>
+                                        <button type="button" className="btn-close" onClick={closeModal} ></button>
                                     </div>
 
                                     <form onSubmit={handleSubmit}>
@@ -217,15 +229,7 @@ function Organization() {
                                                 <label htmlFor="org_name" className="form-label">
                                                     Organization Name
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    name="org_name"
-                                                    id="org_name"
-                                                    value={formData.org_name}
-                                                    onChange={handleChange}
-                                                    className={`form-control ${errors.org_name ? "is-invalid" : ""
-                                                        }`}
-                                                />
+                                                <input type="text" name="org_name" id="org_name" value={formData.org_name} onChange={handleChange} className={`form-control ${errors.org_name ? "is-invalid" : ""}`} />
                                                 {errors.org_name && (
                                                     <div className="text-danger small">
                                                         {errors.org_name}
@@ -237,15 +241,7 @@ function Organization() {
                                                 <label htmlFor="regional_name" className="form-label">
                                                     Regional Name
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    name="regional_name"
-                                                    id="regional_name"
-                                                    value={formData.regional_name}
-                                                    onChange={handleChange}
-                                                    className={`form-control ${errors.regional_name ? "is-invalid" : ""
-                                                        }`}
-                                                />
+                                                <input type="text" name="regional_name" id="regional_name" value={formData.regional_name} onChange={handleChange} className={`form-control ${errors.regional_name ? "is-invalid" : ""}`} />
                                                 {errors.regional_name && (
                                                     <div className="text-danger small">
                                                         {errors.regional_name}
@@ -255,15 +251,9 @@ function Organization() {
                                         </div>
 
                                         <div className="modal-footer">
-                                            <button
-                                                type="button"
-                                                className="btn btn-secondary"
-                                                onClick={() => setShowModal(false)}
-                                            >
-                                                Close
-                                            </button>
+                                            <button type="button" className="btn btn-secondary" onClick={closeModal} > Close </button>
                                             <button type="submit" className="btn btn-primary">
-                                                Submit
+                                                {isEditing ? "Update" : "Submit"}
                                             </button>
                                         </div>
                                     </form>

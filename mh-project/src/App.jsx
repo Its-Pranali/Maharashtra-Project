@@ -11,6 +11,10 @@ import MasterData from "./components/master/MasterData";
 import District from "./components/master/District";
 import Organization from "./components/master/Organization";
 import Designation from "./components/master/Designation";
+import TicketDetails from "./components/details/TicketDetails";
+import Product from "./components/details/Product";
+import Role from "./components/master/Role";
+import Taluka from "./components/master/Taluka";
 
 function App() {
   return (
@@ -22,6 +26,10 @@ function App() {
       <Route path="/district" element={<District />} />
       <Route path="/organization" element={<Organization />} />
       <Route path="/designation" element={<Designation />} />
+      <Route path="/ticket-details" element={<TicketDetails />} />
+      <Route path="/product" element={<Product />} />
+      <Route path="/role" element={<Role />} />
+      <Route path="/taluka" element={<Taluka />} />
     </Routes>
   );
 }
