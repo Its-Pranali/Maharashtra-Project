@@ -2,6 +2,7 @@
 import Main from "../layout/Main";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { FaTrash, FaEdit } from "react-icons/fa";
 
 function Module() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -118,7 +119,14 @@ function Module() {
                                             <td>{test.product}</td>
                                             <td>{test.module}</td>
                                             <td>{test.regional_name}</td>
-                                            <td></td>
+                                            <td>
+                                                <button type="button" className="btn btn-primary btn-sm">
+                                                    <FaEdit />
+                                                </button>
+                                                <button type="button" className="btn btn-danger ms-2 btn-sm">
+                                                    <FaTrash />
+                                                </button>
+                                            </td>
                                         </tr>
                                     )}
                                 </tbody>
