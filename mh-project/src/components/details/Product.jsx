@@ -56,49 +56,49 @@ function Product() {
   };
 
 
-const fetchProducts = async () => {
-  try {
-    const res = await axios.get("http://127.0.0.1:8000/product", {
-      headers: { "Content-Type": "application/json" },
-    });
-    setProducts(res.data);
-  } catch (error) {
-    console.error("Error fetching products:", error);
-  }
-};
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const validationErrors = validator();
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
-
-  try {
-    const res = await axios.post(
-      "http://127.0.0.1:8000/product/save",
-      formData,
-      { headers: { "Content-Type": "application/json" } }
-    );
-
-    if (res.status === 201 || res.status === 200) {
-      alert(" Product added successfully!");
-      setFormData({ product: "", regional_name: "", priority: "" });
-      setShowModal(false);
-      fetchProducts();
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get("http://127.0.0.1:8000/api/products", {
+        headers: { "Content-Type": "application/json" },
+      });
+      setProducts(res.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
     }
-  } catch (error) {
-    console.error("Error saving product:", error);
-    if (error.response?.data?.errors) {
-      setErrors(error.response.data.errors);
-    } else {
-      alert("Something went wrong while saving data!");
-    }
-  }
-};
+  };
 
- 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validator();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        "http://127.0.0.1:8000/api/products/save",
+        formData,
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      if (res.status === 201 || res.status === 200) {
+        alert(" Product added successfully!");
+        setFormData({ product: "", regional_name: "", priority: "" });
+        setShowModal(false);
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error("Error saving product:", error);
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      } else {
+        alert("Something went wrong while saving data!");
+      }
+    }
+  };
+
+
   return (
     <Main isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
       <div className="container-fluid px-3">
@@ -137,10 +137,10 @@ const handleSubmit = async (e) => {
                         <td>{item.regional_name}</td>
                         <td>{item.priority}</td>
                         <td className="text-center">
-                          <button className="btn btn-sm btn-outline-primary me-2" title="Edit" >
+                          <button className="btn btn-sm btn-primary me-2" title="Edit" >
                             <FaEdit />
                           </button>
-                          <button className="btn btn-sm btn-outline-danger" title="Delete" >
+                          <button className="btn btn-sm btn-danger" title="Delete" >
                             <FaTrash />
                           </button>
                         </td>
@@ -179,19 +179,10 @@ const handleSubmit = async (e) => {
                       <label htmlFor="product" className="form-label">
                         Product
                       </label>
-                      <input
-                        type="text"
-                        name="product"
-                        id="product"
-                        value={formData.product}
-                        onChange={handleChange}
-                        className={`form-control ${
-                          errors.product ? "is-invalid" : ""
-                        }`}
-                      />
-                     {errors.product&&(
-                        <div>{errors.product}</div>
-                     )}
+                      <input type="text" name="product" id="product" value={formData.product} onChange={handleChange} className={`form-control ${errors.product ? "is-invalid" : ""}`} />
+                      {errors.product && (
+                        <div className="invalid-feedback d-block">{errors.product}</div>
+                      )}
                     </div>
 
                     {/* Regional Name */}
@@ -199,20 +190,9 @@ const handleSubmit = async (e) => {
                       <label htmlFor="regional_name" className="form-label">
                         Regional Name
                       </label>
-                      <input
-                        type="text"
-                        name="regional_name"
-                        id="regional_name"
-                        value={formData.regional_name}
-                        onChange={handleChange}
-                        className={`form-control ${
-                          errors.regional_name ? "is-invalid" : ""
-                        }`}
-                      />
+                      <input type="text" name="regional_name" id="regional_name" value={formData.regional_name} onChange={handleChange} className={`form-control ${errors.regional_name ? "is-invalid" : ""}`} />
                       {errors.regional_name && (
-                        <div className="invalid-feedback d-block">
-                          {errors.regional_name}
-                        </div>
+                        <div className="invalid-feedback d-block"> {errors.regional_name} </div>
                       )}
                     </div>
 
@@ -221,15 +201,7 @@ const handleSubmit = async (e) => {
                       <label htmlFor="priority" className="form-label">
                         Priority
                       </label>
-                      <select
-                        name="priority"
-                        id="priority"
-                        value={formData.priority}
-                        onChange={handleChange}
-                        className={`form-control ${
-                          errors.priority ? "is-invalid" : ""
-                        }`}
-                      >
+                      <select name="priority" id="priority" value={formData.priority} onChange={handleChange} className={`form-control ${errors.priority ? "is-invalid" : ""}`} >
                         <option value="">Select Priority</option>
                         {options.map((option, index) => (
                           <option key={index} value={option}>
@@ -238,19 +210,13 @@ const handleSubmit = async (e) => {
                         ))}
                       </select>
                       {errors.priority && (
-                        <div className="invalid-feedback d-block">
-                          {errors.priority}
-                        </div>
+                        <div className="invalid-feedback d-block">  {errors.priority} </div>
                       )}
                     </div>
                   </div>
 
                   <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={() => setShowModal(false)}
-                    >
+                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)} >
                       Cancel
                     </button>
                     <button type="submit" className="btn btn-primary">

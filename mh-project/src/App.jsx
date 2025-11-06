@@ -15,6 +15,8 @@ import TicketDetails from "./components/details/TicketDetails";
 import Product from "./components/details/Product";
 import Role from "./components/master/Role";
 import Taluka from "./components/master/Taluka";
+import Bank from "./components/master/Bank";
+import Module from "./components/details/Module";
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
       <Route path="/product" element={<Product />} />
       <Route path="/role" element={<Role />} />
       <Route path="/taluka" element={<Taluka />} />
+      <Route path="/bank" element={<Bank />} />
+      <Route path="/module" element={<Module />} />
     </Routes>
   );
 }

@@ -5,6 +5,7 @@ import axios from "axios";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/dataTables.dataTables.min.css";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 function Taluka() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -66,7 +67,7 @@ function Taluka() {
     const fetchDistrict = async () => {
         try {
             const res = await axios.get("http://127.0.0.1:8000/api/districts");
-            setDistricts(res.data);
+            setDistricts(res.data.message);
         }
         catch (error) {
             console.error("error while fetching district", error);
@@ -76,7 +77,7 @@ function Taluka() {
     const fetchTaluka = async () => {
         try {
             const res = await axios.get("http://127.0.0.1:8000/api/taluka");
-            setTaluka(res.data);
+            setTaluka(res.data.message);
         }
         catch (error) {
             console.error("error while fetching taluka", error);
@@ -144,7 +145,14 @@ function Taluka() {
                                                 <td>{test.district}</td>
                                                 <td>{test.taluka_name}</td>
                                                 <td>{test.regional_name}</td>
-                                                <td></td>
+                                                <td>
+                                                    <button className="btn btn-primary btn-sm" type="button">
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button className="btn btn-danger btn-sm" type="button">
+                                                        <FaTrash />
+                                                    </button>
+                                                </td>
                                             </tr>
                                         )
                                     ) : (
