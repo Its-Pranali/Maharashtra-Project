@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Organization;
+
+class OrganizationController extends Controller
+{
+    // Fetch active organizations
+    public function index()
+    {
+        $organizations = Organization::where('status', 1)->get();
+        return response()->json($organizations);
+    }
+
+    // Store new organization
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'org_name' => 'required|string|max:255',
+            'regional_name' => 'required|string|max:255',
+        ]);
+
+        $organization = Organization::create($validated);
+
+        return response()->json([
+            'message' => 'Organization created successfully',
+            'data' => $organization
+        ], 201);
+    }
+
+    // Update organization
+    public function update(Request $request, $id)
+    {
+        $organization = Organization::find($id);
+
+        if (!$organization) {
+            return response()->json(['message' => 'Organization not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'org_name' => 'required|string|max:255',
+            'regional_name' => 'required|string|max:255',
+        ]);
+
+        $organization->update($validated);
+
+        return response()->json([
+            'message' => 'Organization updated successfully',
+            'data' => $organization
+        ], status: 200);
+    }
+
+    // Soft delete organization (status = 0)
+    public function destroy($id)
+    {
+        $organization = Organization::find($id);
+
+        if (!$organization) {
+            return response()->json(['message' => 'Organization not found'], 404);
+        }
+
+        $organization->status = 0;
+
+        if ($organization->save()) {
+            return response()->json(['message' => 'Organization deleted successfully'], 200);
+        }
+
+        return response()->json(['message' => 'Error while deleting organization'], 500);
+    }
+}
