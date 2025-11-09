@@ -17,12 +17,13 @@ import Role from "./components/master/Role";
 import Taluka from "./components/master/Taluka";
 import Bank from "./components/master/Bank";
 import Module from "./components/details/Module";
+import Modules from "./components/master/Modules";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      {/* <Route path="/" element={<Login />} /> */}
+      <Route path="/" element={<Dashboard />} />
       <Route path="/main" element={<Main />} />
       <Route path="/master-data" element={<MasterData />} />
       <Route path="/district" element={<District />} />
@@ -34,6 +35,7 @@ function App() {
       <Route path="/taluka" element={<Taluka />} />
       <Route path="/bank" element={<Bank />} />
       <Route path="/module" element={<Module />} />
+      <Route path="/modules" element={<Modules />} />
     </Routes>
   );
 }

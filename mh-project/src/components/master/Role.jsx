@@ -11,6 +11,8 @@ function Role() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const toggleSidebar = () => setIsCollapsed((prev) => !prev);
     const [showModal, setShowModal] = useState(false);
+    const [editMode, setEditMode] = useState(false);
+    const [editId, setEditId] = useState(null);
     const [formData, setFormData] = useState({
         role_name: "",
         status: "",
@@ -57,6 +59,15 @@ function Role() {
         });
     }
 
+    const handleEdit = (role) => {
+        setFormData = ({
+            role_name: role.role_name,
+            status: role.status,
+        });
+        setEditId(role.id);
+        setShowModal(true);
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validator();
@@ -66,15 +77,24 @@ function Role() {
         }
 
         try {
-            const res = await axios.post("http://localhost:8000/api/roles/save", formData);
+            if (editMode) {
+                // Update existing role
+                await axios.put(`http://localhost:8000/api/roles/update/${editId}`, formData);
+                alert("Role updated successfully!");
+            } else {
+                // Add new role
+                await axios.post("http://localhost:8000/api/roles/save", formData);
+                alert("Role added successfully!");
+            }
 
-            alert("Role added successfully!");
-            console.log(res.data);
             setShowModal(false);
             setFormData({ role_name: "", status: "" });
+            setEditMode(false);
+            setEditId(null);
+            fetchRole(); // refresh list
         } catch (error) {
             console.error("Error:", error);
-            alert("Failed to add role!");
+            alert("Failed to save role!");
         }
     };
 
@@ -147,7 +167,7 @@ function Role() {
 
                 {showModal && (
                     <>
-                     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm"></div>
+                        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm"></div>
                         <div className="modal show fade" style={{ display: "block", zIndex: 1050 }}>
                             <div className="modal-dialog">
                                 <div className="modal-content">

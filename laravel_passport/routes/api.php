@@ -53,6 +53,7 @@ Route::post('/products/save', [ProductController::class, 'save']);
 // Route::post('/roles', [RoleController::class, 'save']);
 Route::get('/roles', [RoleController::class, 'index']);
 Route::post('/roles/save', [RoleController::class, 'save']);
+Route::post('/roles/update/{id}', [RoleController::class, 'update']);
 
 Route::get('/taluka', [TalukaController::class, 'index']);
 Route::post('/taluka/save', [TalukaController::class, 'save']);
