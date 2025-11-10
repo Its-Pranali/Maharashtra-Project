@@ -111,11 +111,14 @@ function Sidebar({ isCollapsed }) {
                 </Link>
               </li>
               <li className="py-2 ps-4 m-1 rounded hover-bg">
-                <Link
-                  to="/designation"
-                  className="text-decoration-none text-dark"
-                >
+                <Link to="/designation" className="text-decoration-none text-dark">
                   Designation
+                </Link>
+              </li>
+
+               <li className="py-2 ps-4 m-1 rounded hover-bg">
+                <Link to="/modules" className="text-decoration-none text-dark">
+                  Modules
                 </Link>
               </li>
             </ul>

@@ -11,6 +11,8 @@ function Role() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const toggleSidebar = () => setIsCollapsed((prev) => !prev);
     const [showModal, setShowModal] = useState(false);
+    const [editMode, setEditMode] = useState(false);
+    const [editId, setEditId] = useState(null);
     const [formData, setFormData] = useState({
         role_name: "",
         status: "",
@@ -58,6 +60,15 @@ function Role() {
         });
     }
 
+    const handleEdit = (role) => {
+        setFormData = ({
+            role_name: role.role_name,
+            status: role.status,
+        });
+        setEditId(role.id);
+        setShowModal(true);
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validator();
@@ -80,7 +91,7 @@ function Role() {
         }
         catch (error) {
             console.error("Error:", error);
-            alert("Failed to add role!");
+            alert("Failed to save role!");
         }
     };
     const handleEdit = (role) => {
