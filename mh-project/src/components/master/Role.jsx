@@ -94,15 +94,7 @@ function Role() {
             alert("Failed to save role!");
         }
     };
-    const handleEdit = (role) => {
-        setFormData({
-            role_name: role.role_name,
-            status: role.status,
-        });
-        setIsEdit(role.id);
-        setErrors({});
-        setShowModal(true);
-    }
+ 
 
     const handleCloseModal = () => {
         setShowModal(false);
