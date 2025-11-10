@@ -91,7 +91,7 @@ function Module() {
                 <div className="row">
                     <div className="card py-3">
                         <div className="d-flex justify-content-between align-items-center">
-                            <div className="card-title fw-bold fs-5">Bank List</div>
+                            <div className="card-title fw-bold fs-5">Module List</div>
                             <button className="btn btn-sm btn-primary" onClick={handleAddModule} >
                                 Add Module
                             </button>

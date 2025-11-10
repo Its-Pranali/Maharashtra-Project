@@ -19,6 +19,7 @@ function Taluka() {
     });
     const [errors, setErrors] = useState({});
     const [taluka, setTaluka] = useState([]);
+    const [isEdit, setIsEdit] = useState(false);
 
     const validator = () => {
         const newErrors = {};
@@ -38,6 +39,7 @@ function Taluka() {
         });
     }
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const validationErrors = validator();
@@ -45,19 +47,27 @@ function Taluka() {
             setErrors(validationErrors);
             return;
         }
+
         try {
-            const res = await axios.post("http://127.0.0.1:8000/api/taluka/save", formData);
-            alert("Taluka added successfully");
-            console.log(res.data);
+            if (isEdit) {
+                await axios.put(`http://127.0.0.1:8000/api/taluka/${isEdit}`, formData);
+                alert("Taluka updated successfully");
+            } else {
+                await axios.post("http://127.0.0.1:8000/api/taluka/save", formData);
+                alert("Taluka saved successfully");
+            }
+
             setShowModal(false);
             handleReset();
-            window.location.reload();
+            setIsEdit(null); // reset edit mode
+            fetchTaluka(); // refresh list
+
+        } catch (error) {
+            console.error("Error while saving data", error);
+            alert("Failed to save data");
         }
-        catch (error) {
-            console.error("Error while saving data", errors);
-            alert("failed to add role");
-        }
-    }
+    };
+
 
     const handleTaluka = () => {
         setShowModal(true);
@@ -67,7 +77,9 @@ function Taluka() {
     const fetchDistrict = async () => {
         try {
             const res = await axios.get("http://127.0.0.1:8000/api/districts");
-            setDistricts(res.data.message);
+            // setDistricts(res.data.message);
+            setDistricts(res.data); // Safely handle missing array
+
         }
         catch (error) {
             console.error("error while fetching district", error);
@@ -89,6 +101,17 @@ function Taluka() {
             taluka_name: "",
             regional_name: "",
         });
+    }
+
+    const handleEdit = (taluka) => {
+        setFormData({
+            district: taluka.district,
+            taluka_name: taluka.taluka_name,
+            regional_name: taluka.regional_name,
+        });
+        setIsEdit(taluka.id);
+        setShowModal(true);
+
     }
 
     useEffect(() => {
@@ -146,10 +169,10 @@ function Taluka() {
                                                 <td>{test.taluka_name}</td>
                                                 <td>{test.regional_name}</td>
                                                 <td>
-                                                    <button className="btn btn-primary btn-sm" type="button">
+                                                    <button className="btn btn-primary btn-sm " onClick={() => handleEdit(test)} type="button">
                                                         <FaEdit />
                                                     </button>
-                                                    <button className="btn btn-danger btn-sm" type="button">
+                                                    <button className="btn btn-danger btn-sm mx-2" type="button">
                                                         <FaTrash />
                                                     </button>
                                                 </td>
@@ -174,7 +197,7 @@ function Taluka() {
                             <div className="modal-dialog">
                                 <div className="modal-content">
                                     <div className="modal-header">
-                                        <h5 className="modal-title">Add Taluka</h5>
+                                        <h5 className="modal-title">{isEdit ? "Edit Taluka" : "Add Taluka"}</h5>
                                         <button className="btn-close" type="button" onClick={() => setShowModal(false)}></button>
                                     </div>
                                     <form action="" onSubmit={handleSubmit}>
@@ -184,9 +207,14 @@ function Taluka() {
                                                     <label htmlFor="district" className="form-label">District</label>
                                                     <select name="district" id="district" className={`form-control ${errors.district ? "is-invalid" : ""}`} onChange={handleChange} value={formData.district}>
                                                         <option value="">Select District</option>
-                                                        {districts.map((test, index) =>
-                                                            <option key={index} value={test.district}>{test.district}</option>
+                                                        {Array.isArray(districts) && districts.length > 0 ? (
+                                                            districts.map((test, index) =>
+                                                                <option key={index} value={test.district}>{test.district}</option>
+                                                            )
+                                                        ) : (
+                                                            <option>Data not found</option>
                                                         )}
+
                                                     </select>
                                                     {errors.district && (
                                                         <div className="text-danger small">{errors.district}</div>
@@ -212,7 +240,7 @@ function Taluka() {
                                         </div>
                                         <div className="modal-footer">
                                             <button type="button" className="btn btn-muted" onClick={() => setShowModal(false)}>Cancel</button>
-                                            <button type="submit" className="btn btn-primary">Save</button>
+                                            <button type="submit" className="btn btn-primary">{isEdit ? "Update" : "Save"}</button>
                                         </div>
                                     </form>
                                 </div>

@@ -31,25 +31,46 @@ class OrganizationController extends Controller
     }
 
     // Update organization
+    // public function update(Request $request, $id)
+    // {
+    //     $organization = Organization::find($id);
+
+    //     if (!$organization) {
+    //         return response()->json(['message' => 'Organization not found'], 404);
+    //     }
+
+    //     $validated = $request->validate([
+    //         'org_name' => 'required|string|max:255',
+    //         'regional_name' => 'required|string|max:255',
+    //     ]);
+
+    //     $organization->update($validated);
+
+    //     return response()->json([
+    //         'message' => 'Organization updated successfully',
+    //         'data' => $organization
+    //     ], status: 200);
+    // }
+
     public function update(Request $request, $id)
     {
-        $organization = Organization::find($id);
-
-        if (!$organization) {
-            return response()->json(['message' => 'Organization not found'], 404);
+        $data = Organization::find($id);
+        if (!$data) {
+            return response()->json(['status' => false, 'message' => "Orgnization not found", 'code' => 500]);
         }
-
-        $validated = $request->validate([
+        $validator = $request->validate([
             'org_name' => 'required|string|max:255',
             'regional_name' => 'required|string|max:255',
         ]);
+        $data->org_name = $validator['org_name'];
+        $data->regional_name = $validator['regional_name'];
 
-        $organization->update($validated);
-
-        return response()->json([
-            'message' => 'Organization updated successfully',
-            'data' => $organization
-        ], status: 200);
+        $result = $data->save();
+        if ($result) {
+            return response()->json(['status' => true, 'message' => "Orgnization updated successfully", 'code' => 200]);
+        } else {
+            return response()->json(['status' => false, 'message' => "Error while updating organization", 'code' => 500]);
+        }
     }
 
     // Soft delete organization (status = 0)

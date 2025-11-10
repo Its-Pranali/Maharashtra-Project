@@ -15,7 +15,7 @@ function Dashboard() {
         <div className="row">
           <div className="col-md-3">
             <Link to="/master-data">
-              <div className="card  py-4 card-light-blue">
+              <div className="card px-2 py-4 card-light-blue">
                 <h5>Master Data</h5>
               </div>
             </Link>
@@ -23,7 +23,7 @@ function Dashboard() {
 
           <div className="col-md-3">
             <Link to="/ticket-details">
-              <div className="card  py-4 card-light-blue">
+              <div className="card px-2 py-4 card-light-blue">
                 <h5>Ticket Details</h5>
               </div>
             </Link>
@@ -31,7 +31,7 @@ function Dashboard() {
 
           <div className="col-md-3">
             <Link to="/master-data">
-              <div className="card  py-4 card-light-blue">
+              <div className="card px-2 py-4 card-light-blue">
                 <h5>Inprogress Ticket</h5>
               </div>
             </Link>

@@ -17,6 +17,7 @@ import Role from "./components/master/Role";
 import Taluka from "./components/master/Taluka";
 import Bank from "./components/master/Bank";
 import Module from "./components/details/Module";
+import Branch from "./components/master/Branch";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
       <Route path="/taluka" element={<Taluka />} />
       <Route path="/bank" element={<Bank />} />
       <Route path="/module" element={<Module />} />
+      <Route path="/branch" element={<Branch />} />
     </Routes>
   );
 }

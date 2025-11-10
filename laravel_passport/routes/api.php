@@ -11,6 +11,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TalukaController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\BranchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,12 +54,21 @@ Route::post('/products/save', [ProductController::class, 'save']);
 // Route::post('/roles', [RoleController::class, 'save']);
 Route::get('/roles', [RoleController::class, 'index']);
 Route::post('/roles/save', [RoleController::class, 'save']);
+Route::put('roles/{id}', [RoleController::class, 'update']);
+
+Route::get('/branch', [BranchController::class, 'index']);
+Route::post('/branch/save', [BranchController::class, 'save']);
+Route::put('branch/{id}', [BranchController::class, 'update']);
+Route::delete('branch/{id}', [BranchController::class, 'delete']);
 
 Route::get('/taluka', [TalukaController::class, 'index']);
 Route::post('/taluka/save', [TalukaController::class, 'save']);
+Route::put('/taluka/{id}', [TalukaController::class, 'update']);
 
 Route::get('/bank', [BankController::class, 'index']);
 Route::post('/bank/save', [BankController::class, 'save']);
+Route::put('/bank/{id}', [BankController::class, 'update']);
+Route::delete('/bank/{id}', [BankController::class, 'delete']);
 
 Route::get('/module', [ModuleController::class, 'index']);
 Route::post('/module/save', [ModuleController::class, 'save']);

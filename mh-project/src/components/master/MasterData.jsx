@@ -13,7 +13,7 @@ function MasterData() {
                 <div className="row">
                     <div className="col-md-3 my-2">
                         <Link to="/district">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>District</h5>
                             </div>
                         </Link>
@@ -21,7 +21,7 @@ function MasterData() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/master-data">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Taluka</h5>
                             </div>
                         </Link>
@@ -29,7 +29,7 @@ function MasterData() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/master-data">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Village</h5>
                             </div>
                         </Link>
@@ -37,7 +37,7 @@ function MasterData() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/master-data">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Bank</h5>
                             </div>
                         </Link>
@@ -45,7 +45,7 @@ function MasterData() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/master-data">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Branch</h5>
                             </div>
                         </Link>
@@ -53,7 +53,7 @@ function MasterData() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/organization">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Organization</h5>
                             </div>
                         </Link>
@@ -61,7 +61,7 @@ function MasterData() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/designation">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Designation</h5>
                             </div>
                         </Link>

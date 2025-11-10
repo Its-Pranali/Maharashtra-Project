@@ -30,4 +30,30 @@ class TalukaController extends Controller
         $data = Taluka::create($validator);
         return sendReposne($data);
     }
+
+    public function update(Request $request, $id)
+    {
+        $data = Taluka::find($id);
+        if (!$data) {
+            return response()->json(['status' => false, 'message' => "data not found", 'code' => 500]);
+        }
+
+        $validator = $request->validate([
+            'district' => 'required|string|max:255',
+            'taluka_name' => 'required|string|max:255',
+            'regional_name' => 'required|string|max:255',
+        ]);
+
+        $data->district = $validator['district'];
+        $data->taluka_name = $validator['taluka_name'];
+        $data->regional_name = $validator['regional_name'];
+
+        $result = $data->save();
+
+        if ($result) {
+            return response()->json(['status' => true, 'message' => "Taluka updated successfully", 'code' => 200]);
+        } else {
+            return response()->json(['status' => false, 'message' => "error while updating taluka", 'code' => 500]);
+        }
+    }
 }

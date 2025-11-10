@@ -18,6 +18,7 @@ function Role() {
     const [errors, setErrors] = useState({});
     const [options, setOptions] = useState([]);
     const [roles, setRoles] = useState([]);
+    const [isEdit, setIsEdit] = useState(null);
 
     useEffect(() => {
         const statusOptions = ["Active", "Inactive"];
@@ -66,17 +67,38 @@ function Role() {
         }
 
         try {
-            const res = await axios.post("http://localhost:8000/api/roles/save", formData);
-
-            alert("Role added successfully!");
-            console.log(res.data);
-            setShowModal(false);
-            setFormData({ role_name: "", status: "" });
-        } catch (error) {
+            if (isEdit) {
+                await axios.put(`http://localhost:8000/api/roles/${isEdit}`, formData);
+                alert("Role updated successfully");
+            }
+            else {
+                await axios.post("http://localhost:8000/api/roles/save", formData);
+                alert("Role saved successfully");
+            }
+            handleCloseModal();
+            fetchRole();
+        }
+        catch (error) {
             console.error("Error:", error);
             alert("Failed to add role!");
         }
     };
+    const handleEdit = (role) => {
+        setFormData({
+            role_name: role.role_name,
+            status: role.status,
+        });
+        setIsEdit(role.id);
+        setErrors({});
+        setShowModal(true);
+    }
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        handleReset();
+        setIsEdit(null);
+        setErrors({});
+    }
 
     const fetchRole = async (e) => {
         try {
@@ -88,7 +110,12 @@ function Role() {
         }
 
     }
-
+    const handleReset = () => {
+        setFormData({
+            role_name: "",
+            status: "",
+        });
+    };
 
     const handleAddRole = () => {
         setShowModal(true);
@@ -147,7 +174,7 @@ function Role() {
 
                 {showModal && (
                     <>
-                     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm"></div>
+                        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm"></div>
                         <div className="modal show fade" style={{ display: "block", zIndex: 1050 }}>
                             <div className="modal-dialog">
                                 <div className="modal-content">
@@ -181,7 +208,7 @@ function Role() {
                                             </div>
                                         </div>
                                         <div className="modal-footer">
-                                            <button type="button" className="btn btn-muted" onClick={() => setShowModal(false)}>Cancel</button>
+                                            <button type="button" className="btn btn-muted" onClick={handleCloseModal}>Cancel</button>
                                             <button type="submit" className="btn btn-primary">Save</button>
                                         </div>
                                     </form>

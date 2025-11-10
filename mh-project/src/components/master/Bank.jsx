@@ -1,4 +1,3 @@
-
 import Main from "../layout/Main";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -10,6 +9,7 @@ import "datatables.net-dt/css/dataTables.dataTables.min.css";
 function Bank() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const toggleSidebar = () => setIsCollapsed((prev) => !prev);
+
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
         district: "",
@@ -18,35 +18,37 @@ function Bank() {
     });
     const [errors, setErrors] = useState({});
     const [districts, setDistricts] = useState([]);
-    const [bank, setBank] = useState([]);
+    const [banks, setBanks] = useState([]);
+    const [isEdit, setIsEdit] = useState(null);
 
-    const fetchBank = async () => {
+    // ✅ Fetch Banks
+    const fetchBanks = async () => {
         try {
             const res = await axios.get("http://127.0.0.1:8000/api/bank");
-            setBank(res.data.message);
+            setBanks(res.data.message || []);
+        } catch (error) {
+            console.error("Error while fetching banks", error);
         }
-        catch (error) {
-            console.error("Error while fetching the Bank", error);
-        }
-    }
+    };
 
+    // ✅ Fetch Districts
     const fetchDistricts = async () => {
         try {
             const res = await axios.get("http://127.0.0.1:8000/api/districts");
-            setDistricts(res.data);
+            setDistricts(res.data || []);
+        } catch (error) {
+            console.error("Error while fetching districts", error);
         }
-        catch (error) {
-            console.error("Error while fetching district", error);
-        }
-    }
+    };
 
     useEffect(() => {
         fetchDistricts();
-        fetchBank();
+        fetchBanks();
     }, []);
 
+
     useEffect(() => {
-        if (bank.length > 0) {
+        if (banks.length > 0) {
             if ($.fn.DataTable.isDataTable("#bankTable")) {
                 $("#bankTable").DataTable().destroy();
             }
@@ -56,54 +58,105 @@ function Bank() {
                 searching: true,
                 ordering: true,
                 info: true,
-            })
+            });
         }
-    }, [bank]);
+    }, [banks]);
 
-    const validator = () => {
+
+    const validate = () => {
         const newErrors = {};
-        if (!formData.district.trim()) newErrors.district = "district is required";
-        if (!formData.bank_name.trim()) newErrors.bank_name = "bank name is required";
-        if (!formData.regional_name.trim()) newErrors.regional_name = "regional name is required";
+        if (!formData.district.trim()) newErrors.district = "District is required";
+        if (!formData.bank_name.trim())
+            newErrors.bank_name = "Bank name is required";
+        if (!formData.regional_name.trim())
+            newErrors.regional_name = "Regional name is required";
         return newErrors;
-    }
+    };
+
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
         setErrors({
             ...errors,
-            [e.target.name]: ""
+            [e.target.name]: "",
         });
-    }
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const validationErrors = validator();
+        const validationErrors = validate();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
         }
 
         try {
-            const res = await axios.post("http://127.0.0.1:8000/api/bank/save", formData);
-            alert("Bank added successfully");
-            console.log(res.data);
-            setShowModal(false);
-            fetchBank();
-        }
-        catch (error) {
+            if (isEdit) {
+                await axios.put(`http://127.0.0.1:8000/api/bank/${isEdit}`, formData);
+                alert("Bank updated successfully");
+            } else {
+                await axios.post("http://127.0.0.1:8000/api/bank/save", formData);
+                alert("Bank saved successfully");
+            }
+            handleCloseModal();
+            fetchBanks();
+        } catch (error) {
             console.error("Error while saving bank", error);
-            alert("failed to add bank");
+            alert("Failed to save bank");
         }
+    };
 
-    }
 
     const handleAddBank = () => {
+        handleReset();
+        setErrors({});
+        setIsEdit(null);
         setShowModal(true);
-    }
+    };
 
+
+    const handleEdit = (bank) => {
+        setFormData({
+            district: bank.district,
+            bank_name: bank.bank_name,
+            regional_name: bank.regional_name,
+        });
+        setIsEdit(bank.id);
+        setErrors({});
+        setShowModal(true);
+    };
+
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        handleReset();
+        setIsEdit(null);
+        setErrors({});
+    };
+    const handleReset = () => {
+        setFormData({
+            district: "",
+            bank_name: "",
+            regional_name: "",
+        });
+    }
+    const handleDelete = async(id) => {
+        const confirmDelete=window.confirm("Are you sure you want to delete the bank?");
+        if(!confirmDelete) return;
+        try{
+            await axios.delete(`http://127.0.0.1:8000/api/bank/${id}`);
+            alert ("Bank deleted successfully");
+            fetchBanks();
+        }
+        catch(error){
+            console.error("Error while delete the bank",error);
+            alert("Error while Delete the bank");
+        }
+    }
     return (
         <Main isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
             <div className="container-fluid py-3">
@@ -111,7 +164,7 @@ function Bank() {
                     <div className="card py-3">
                         <div className="d-flex justify-content-between align-items-center">
                             <div className="card-title fw-bold fs-5">Bank List</div>
-                            <button className="btn btn-sm btn-primary" onClick={handleAddBank} >
+                            <button className="btn btn-sm btn-primary" onClick={handleAddBank}>
                                 Add Bank
                             </button>
                         </div>
@@ -121,7 +174,10 @@ function Bank() {
                 <div className="row mt-2">
                     <div className="card py-3">
                         <div className="table-responsive">
-                            <table id="bankTable" className="table table-bordered table-striped table-hover table-sm">
+                            <table
+                                id="bankTable"
+                                className="table table-bordered table-striped table-hover table-sm"
+                            >
                                 <thead>
                                     <tr>
                                         <th>Sr.No</th>
@@ -132,32 +188,38 @@ function Bank() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {bank.length > 0 ? (
-                                        bank.map((test, index) =>
-                                            <tr key={index}>
-                                                <td>{test.id}</td>
-                                                <td>{test.district}</td>
-                                                <td>{test.bank_name}</td>
-                                                <td>{test.regional_name}</td>
+                                    {banks.length > 0 ? (
+                                        banks.map((bank, index) => (
+                                            <tr key={bank.id}>
+                                                <td>{index + 1}</td>
+                                                <td>{bank.district}</td>
+                                                <td>{bank.bank_name}</td>
+                                                <td>{bank.regional_name}</td>
                                                 <td>
-                                                    <button type="button" className="btn btn-primary btn-sm">
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-primary btn-sm"
+                                                        onClick={() => handleEdit(bank)}
+                                                    >
                                                         <FaEdit />
                                                     </button>
-                                                    <button type="button" className="btn btn-danger btn-sm mx-2">
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-danger btn-sm mx-2" onClick={()=>handleDelete(bank.id)}
+                                                    >
                                                         <FaTrash />
                                                     </button>
                                                 </td>
                                             </tr>
-                                        )
+                                        ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="4" align="center">
-                                                No districts found.
+                                            <td colSpan="5" align="center">
+                                                No banks found.
                                             </td>
                                         </tr>
                                     )}
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -168,47 +230,101 @@ function Bank() {
                 <>
                     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm"></div>
 
-                    <div className="modal fade show" style={{ display: "block", zIndex: 1050 }}>
+                    <div
+                        className="modal fade show"
+                        style={{ display: "block", zIndex: 1050 }}
+                    >
                         <div className="modal-dialog">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h5 className="modal-title">Add Bank</h5>
-                                    <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                                    <h5 className="modal-title">
+                                        {isEdit ? "Edit Bank" : "Add Bank"}
+                                    </h5>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        onClick={handleCloseModal}
+                                    ></button>
                                 </div>
-                                <form action="" onSubmit={handleSubmit}>
+                                <form onSubmit={handleSubmit}>
                                     <div className="modal-body">
                                         <div className="col-md-12 form-group my-2">
-                                            <label htmlFor="district" className="form-label">District</label>
-                                            <select name="district" id="district" onChange={handleChange} value={formData.district} className={`form-control ${errors.district ? "is-invalid" : ""}`}>
+                                            <label htmlFor="district" className="form-label">
+                                                District
+                                            </label>
+                                            <select
+                                                name="district"
+                                                id="district"
+                                                onChange={handleChange}
+                                                value={formData.district}
+                                                className={`form-control ${errors.district ? "is-invalid" : ""
+                                                    }`}
+                                            >
                                                 <option value="">Select district</option>
-                                                {districts.map((test, index) =>
-                                                    <option key={index} value={test.district}>{test.district}</option>
-                                                )}
+                                                {districts.map((d, index) => (
+                                                    <option key={index} value={d.district}>
+                                                        {d.district}
+                                                    </option>
+                                                ))}
                                             </select>
                                             {errors.district && (
-                                                <div className="text-danger small">{errors.district}</div>
+                                                <div className="text-danger small">
+                                                    {errors.district}
+                                                </div>
                                             )}
                                         </div>
 
                                         <div className="col-md-12 form-group my-2">
-                                            <label htmlFor="bank_name" className="form-label">Bank</label>
-                                            <input type="text" id="bank_name" name="bank_name" onChange={handleChange} value={formData.bank_name} className={`form-control ${errors.bank_name ? "is-invalid" : ""}`} />
+                                            <label htmlFor="bank_name" className="form-label">
+                                                Bank Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="bank_name"
+                                                name="bank_name"
+                                                onChange={handleChange}
+                                                value={formData.bank_name}
+                                                className={`form-control ${errors.bank_name ? "is-invalid" : ""
+                                                    }`}
+                                            />
                                             {errors.bank_name && (
-                                                <div className="text-danger small">{errors.bank_name}</div>
+                                                <div className="text-danger small">
+                                                    {errors.bank_name}
+                                                </div>
                                             )}
                                         </div>
 
                                         <div className="col-md-12 form-group my-2">
-                                            <label htmlFor="regional_name" className="form-label">Regional Name</label>
-                                            <input type="text" id="regional_name" name="regional_name" onChange={handleChange} value={formData.regional_name} className={`form-control ${errors.regional_name ? "is-invalid" : ""}`} />
+                                            <label htmlFor="regional_name" className="form-label">
+                                                Regional Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="regional_name"
+                                                name="regional_name"
+                                                onChange={handleChange}
+                                                value={formData.regional_name}
+                                                className={`form-control ${errors.regional_name ? "is-invalid" : ""
+                                                    }`}
+                                            />
                                             {errors.regional_name && (
-                                                <div className="text-danger small">{errors.regional_name}</div>
+                                                <div className="text-danger small">
+                                                    {errors.regional_name}
+                                                </div>
                                             )}
                                         </div>
                                     </div>
                                     <div className="modal-footer">
-                                        <button type="button" className="btn btn-muted border" onClick={() => setShowModal(false)}>Cancel</button>
-                                        <button type="submit" className="btn btn-primary">Save</button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-muted border"
+                                            onClick={handleCloseModal}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button type="submit" className="btn btn-primary">
+                                            {isEdit ? "Update" : "Save"}
+                                        </button>
                                     </div>
                                 </form>
                             </div>

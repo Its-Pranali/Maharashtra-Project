@@ -13,7 +13,7 @@ function TicketDetails() {
                 <div className="row">
                     <div className="col-md-3 my-2">
                         <Link to="/product">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Product</h5>
                             </div>
                         </Link>
@@ -21,7 +21,7 @@ function TicketDetails() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/master-data">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Module</h5>
                             </div>
                         </Link>
@@ -29,7 +29,7 @@ function TicketDetails() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/master-data">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Task</h5>
                             </div>
                         </Link>
@@ -37,7 +37,7 @@ function TicketDetails() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/master-data">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Open Ticket</h5>
                             </div>
                         </Link>
@@ -45,7 +45,7 @@ function TicketDetails() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/master-data">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Inprogress Ticket</h5>
                             </div>
                         </Link>
@@ -53,7 +53,7 @@ function TicketDetails() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/organization">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Closed Ticket</h5>
                             </div>
                         </Link>
@@ -61,7 +61,7 @@ function TicketDetails() {
 
                     <div className="col-md-3 my-2">
                         <Link to="/designation">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>Forwarded Ticket</h5>
                             </div>
                         </Link>
@@ -69,7 +69,7 @@ function TicketDetails() {
 
                      <div className="col-md-3 my-2">
                         <Link to="/designation">
-                            <div className="card  py-4 card-light-blue">
+                            <div className="card px-2 py-4 card-light-blue">
                                 <h5>All Tickets</h5>
                             </div>
                         </Link>
