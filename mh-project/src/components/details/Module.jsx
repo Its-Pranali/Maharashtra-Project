@@ -3,6 +3,7 @@ import Main from "../layout/Main";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FaTrash, FaEdit } from "react-icons/fa";
+import axiosInstance from "../../api/axiosConfig";
 
 function Module() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -31,7 +32,7 @@ function Module() {
 
     const fetchProduct = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/products");
+            const res = await axiosInstance.get("/products");
             setProduct(res.data);
         }
         catch (error) {
@@ -40,7 +41,7 @@ function Module() {
     }
     const fetchModule = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/module");
+            const res = await axiosInstance.get("/module");
             setModule(res.data.message);
         }
         catch (error) {
@@ -73,7 +74,7 @@ function Module() {
             return;
         }
         try {
-            const res = await axios.post("http://127.0.0.1:8000/api/module/save", formData);
+            const res = await axiosInstance.post("/module/save", formData);
             alert("Module saved Successfully");
             console.log(res.data.message);
             fetchModule();

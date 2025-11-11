@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Main from "../layout/Main";
 import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa"; // for Action buttons
+import axiosInstance from "../../api/axiosConfig";
 
 function Product() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -58,7 +59,7 @@ function Product() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/products", {
+      const res = await axiosInstance.get("/products", {
         headers: { "Content-Type": "application/json" },
       });
       setProducts(res.data);
@@ -76,8 +77,8 @@ function Product() {
     }
 
     try {
-      const res = await axios.post(
-        "http://127.0.0.1:8000/api/products/save",
+      const res = await axiosInstance.post(
+        "/products/save",
         formData,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -131,7 +132,7 @@ function Product() {
                 <tbody>
                   {products.length > 0 ? (
                     products.map((item, index) => (
-                      <tr key={item.id}>
+                      <tr key={item.id} className="text-center">
                         <td className="text-center">{index + 1}</td>
                         <td>{item.product}</td>
                         <td>{item.regional_name}</td>

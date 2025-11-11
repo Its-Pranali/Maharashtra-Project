@@ -2,6 +2,11 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../assets/style.css";
+// import api from "../api/axiosConfig";
+import axiosBaseUrl from "../api/axiosConfig";
+
+
+
 
 function Login() {
     const navigate = useNavigate();
@@ -46,8 +51,9 @@ function Login() {
 
         try {
             axios.defaults.withCredentials = true;
-            const response = await axios.post("http://localhost/Maharashtra-Project/laravel_passport/api/login", formData);
-
+            console.log("Base URL:", import.meta.env.VITE_API_BASE_URL);
+            // const response = await axios.post("/login", formData);
+           const response = await axiosBaseUrl.post("/login", formData);
             console.log("Login API Response:", response.data);
 
             if (response.data?.token) {

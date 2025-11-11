@@ -5,6 +5,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import $ from "jquery";
 import "datatables.net-dt/css/dataTables.dataTables.min.css";
 import "datatables.net-dt";
+import axiosInstance from "../../api/axiosConfig";
 
 function Organization() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -24,7 +25,7 @@ function Organization() {
     //  Fetch all organizations
     const fetchOrganizations = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/organizations");
+            const res = await axiosInstance.get("/organizations");
             setOrganizations(res.data);
         } catch (error) {
             console.error("Error fetching organizations:", error);
@@ -87,14 +88,14 @@ function Organization() {
             let res;
             if (isEditing && editId) {
                 // Update existing record
-                res = await axios.put(
-                    `http://127.0.0.1:8000/api/organizations/${editId}`,
+                res = await axiosInstance.put(
+                    `/organizations/${editId}`,
                     formData
                 );
             } else {
                 // Add new record
-                res = await axios.post(
-                    "http://127.0.0.1:8000/api/organizations",
+                res = await axiosInstance.post(
+                    "/organizations",
                     formData
                 );
                 window.location.reload();
@@ -133,7 +134,7 @@ function Organization() {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this organization?")) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/organizations/${id}`);
+                await axiosInstance.delete(`/organizations/${id}`);
                 alert("Organization deleted successfully!");
                 fetchOrganizations();
             } catch (error) {

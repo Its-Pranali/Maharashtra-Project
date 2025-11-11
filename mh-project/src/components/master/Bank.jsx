@@ -5,6 +5,7 @@ import { FaTrash, FaEdit } from "react-icons/fa";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/dataTables.dataTables.min.css";
+import axiosInstance from "../../api/axiosConfig";
 
 function Bank() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -21,20 +22,20 @@ function Bank() {
     const [banks, setBanks] = useState([]);
     const [isEdit, setIsEdit] = useState(null);
 
-    // ✅ Fetch Banks
+
     const fetchBanks = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/bank");
+            const res = await axiosInstance.get("/bank");
             setBanks(res.data.message || []);
         } catch (error) {
             console.error("Error while fetching banks", error);
         }
     };
 
-    // ✅ Fetch Districts
+
     const fetchDistricts = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/districts");
+            const res = await axiosInstance.get("/districts");
             setDistricts(res.data || []);
         } catch (error) {
             console.error("Error while fetching districts", error);
@@ -96,10 +97,10 @@ function Bank() {
 
         try {
             if (isEdit) {
-                await axios.put(`http://127.0.0.1:8000/api/bank/${isEdit}`, formData);
+                await axiosInstance.put(`/bank/${isEdit}`, formData);
                 alert("Bank updated successfully");
             } else {
-                await axios.post("http://127.0.0.1:8000/api/bank/save", formData);
+                await axiosInstance.post("/bank/save", formData);
                 alert("Bank saved successfully");
             }
             handleCloseModal();
@@ -148,7 +149,7 @@ function Bank() {
         const confirmDelete=window.confirm("Are you sure you want to delete the bank?");
         if(!confirmDelete) return;
         try{
-            await axios.delete(`http://127.0.0.1:8000/api/bank/${id}`);
+            await axiosInstance.delete(`/bank/${id}`);
             alert ("Bank deleted successfully");
             fetchBanks();
         }

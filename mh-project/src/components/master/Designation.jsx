@@ -5,6 +5,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/dataTables.dataTables.min.css";
+import axiosInstance from "../../api/axiosConfig";
 
 function Designation() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -24,7 +25,7 @@ function Designation() {
     // === FETCH DESIGNATION ===
     const fetchDesignation = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/designation");
+            const res = await axiosInstance.get("/designations");
             setDesignations(res.data);
         } catch (error) {
             console.error("Error fetching designations:", error);
@@ -81,16 +82,16 @@ function Designation() {
 
         try {
             if (isEditing) {
-                const res = await axios.put(
-                    `http://127.0.0.1:8000/api/designation/${editId}`,
+                const res = await axiosInstance.put(
+                    `/designations/${editId}`,
                     formData
                 );
                 if (res.status === 200) {
                     alert("Designation updated successfully!");
                 }
             } else {
-                const res = await axios.post(
-                    "http://127.0.0.1:8000/api/designation/save",
+                const res = await axiosInstance.post(
+                    "/designations/save",
                     formData
                 );
                 if (res.status === 201 || res.status === 200) {
@@ -118,8 +119,8 @@ function Designation() {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this designation?")) {
             try {
-                const res = await axios.delete(
-                    `http://127.0.0.1:8000/api/designation/${id}`
+                const res = await axiosInstance.delete(
+                    `/designations/${id}`
                 );
                 if (res.status === 200) {
                     alert("Designation deleted successfully!");

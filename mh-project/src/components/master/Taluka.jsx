@@ -6,6 +6,7 @@ import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/dataTables.dataTables.min.css";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import axiosInstance from "../../api/axiosConfig";
 
 function Taluka() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -50,10 +51,10 @@ function Taluka() {
 
         try {
             if (isEdit) {
-                await axios.put(`http://127.0.0.1:8000/api/taluka/${isEdit}`, formData);
+                await axiosInstance.put(`/taluka/${isEdit}`, formData);
                 alert("Taluka updated successfully");
             } else {
-                await axios.post("http://127.0.0.1:8000/api/taluka/save", formData);
+                await axiosInstance.post("/taluka/save", formData);
                 alert("Taluka saved successfully");
             }
 
@@ -76,7 +77,7 @@ function Taluka() {
 
     const fetchDistrict = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/districts");
+            const res = await axiosInstance.get("/districts");
             // setDistricts(res.data.message);
             setDistricts(res.data); // Safely handle missing array
 
@@ -88,7 +89,7 @@ function Taluka() {
 
     const fetchTaluka = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/taluka");
+            const res = await axiosInstance.get("/taluka");
             setTaluka(res.data.message);
         }
         catch (error) {
@@ -138,7 +139,7 @@ function Taluka() {
         const confirmDelete = window.confirm("Are you sure you want to delete the taluka?");
         if (!confirmDelete) return;
         try {
-            await axios.delete(`http://localhost:8000/api/taluka/${id}`);
+            await axiosInstance.delete(`/taluka/${id}`);
             alert("Taluka deleted successfully");
             fetchTaluka();
         }

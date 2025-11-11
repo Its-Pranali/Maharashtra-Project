@@ -5,6 +5,7 @@ import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/dataTables.dataTables.min.css";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import axiosInstance from "../../api/axiosConfig";
 
 function Branch() {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -48,15 +49,16 @@ function Branch() {
         }
         try {
             if (isEdit) {
-                await axios.put(`http://127.0.0.1:8000/api/branch/${isEdit}`, formData);
+                await axiosInstance.put(`/branch/${isEdit}`, formData);
                 alert("Branch updated successfully");
             }
             else {
-                await axios.post("http://127.0.0.1:8000/api/branch/save", formData);
+                await axiosInstance.post("/branch/save", formData);
                 alert("Branch saved Successfully");
             }
-            handleCloseModal();
             fetchBranch();
+            handleCloseModal();
+
         }
         catch (error) {
             console.error("data not found", error);
@@ -75,12 +77,12 @@ function Branch() {
         setShowModal(true);
     }
     const fetchDistrict = async () => {
-        const res = await axios.get("http://127.0.0.1:8000/api/districts");
+        const res = await axiosInstance.get("/districts");
         setDistrict(res.data);
     }
 
     const fetchBranch = async () => {
-        const res = await axios.get("http://127.0.0.1:8000/api/branch");
+        const res = await axiosInstance.get("/branch");
         setBranch(res.data.message);
     }
 
@@ -101,7 +103,7 @@ function Branch() {
                 info: true,
             });
         }
-    },[branch]);
+    }, [branch]);
     const handleAddBranch = () => {
         setShowModal(true);
     }
@@ -125,7 +127,7 @@ function Branch() {
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/branch/${id}`);
+            await axiosInstance.delete(`/branch/${id}`);
             alert("Branch deleted successfully");
             fetchBranch();
         } catch (error) {
@@ -171,7 +173,7 @@ function Branch() {
                                                         <button type="button" className="btn btn-sm btn-primary" onClick={() => handleEdit(test)}>
                                                             <FaEdit />
                                                         </button>
-                                                        <button type="button" className="btn btn-sm mx-2 btn-danger" onClick={()=>handleDelete(test.id)}>
+                                                        <button type="button" className="btn btn-sm mx-2 btn-danger" onClick={() => handleDelete(test.id)}>
                                                             <FaTrash />
                                                         </button>
                                                     </td>

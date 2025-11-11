@@ -5,6 +5,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/dataTables.dataTables.min.css";
+import axiosInstance from "../../api/axiosConfig";
 
 
 function District() {
@@ -23,7 +24,7 @@ function District() {
 
     const fetchDistricts = async () => {
         try {
-            const res = await axios.get("http://127.0.0.1:8000/api/districts");
+            const res = await axiosInstance.get("/districts");
             setDistricts(res.data);
         } catch (error) {
             console.error("Error fetching districts:", error);
@@ -83,13 +84,13 @@ function District() {
 
         try {
             if (editingId) {
-                await axios.put(
-                    `http://127.0.0.1:8000/api/districts/${editingId}`,
+                await axiosInstance.put(
+                    `/districts/${editingId}`,
                     formData
                 );
                 alert("District updated successfully!");
             } else {
-                await axios.post("http://127.0.0.1:8000/api/districts", formData);
+                await axiosInstance.post("/districts", formData);
                 alert("District added successfully!");
                 window.location.reload();
             }
@@ -120,7 +121,7 @@ function District() {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this district?")) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/districts/${id}`);
+                await axiosInstance.delete(`/districts/${id}`);
                 alert("District deleted successfully!");
                 fetchDistricts();
             } catch (error) {
