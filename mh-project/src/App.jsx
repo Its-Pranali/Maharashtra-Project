@@ -22,8 +22,8 @@ import Branch from "./components/master/Branch";
 function App() {
   return (
     <Routes>
-      {/* <Route path="/" element={<Login />} /> */}
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/" element={<Login />} />
+      {/* <Route path="/" element={<Dashboard />} /> */}
       <Route path="/main" element={<Main />} />
       <Route path="/master-data" element={<MasterData />} />
       <Route path="/district" element={<District />} />

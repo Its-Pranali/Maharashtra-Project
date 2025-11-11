@@ -133,6 +133,20 @@ function Taluka() {
             });
         }
     }, [taluka]);
+
+    const handleDelete = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete the taluka?");
+        if (!confirmDelete) return;
+        try {
+            await axios.delete(`http://localhost:8000/api/taluka/${id}`);
+            alert("Taluka deleted successfully");
+            fetchTaluka();
+        }
+        catch (error) {
+            console.error("Error while delete the Taluka", error);
+            alert("Error");
+        }
+    }
     return (
         <Main isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
             <div className="container-fluid mx-3">
@@ -172,7 +186,7 @@ function Taluka() {
                                                     <button className="btn btn-primary btn-sm " onClick={() => handleEdit(test)} type="button">
                                                         <FaEdit />
                                                     </button>
-                                                    <button className="btn btn-danger btn-sm mx-2" type="button">
+                                                    <button className="btn btn-danger btn-sm mx-2" onClick={() => handleDelete(test.id)} type="button">
                                                         <FaTrash />
                                                     </button>
                                                 </td>

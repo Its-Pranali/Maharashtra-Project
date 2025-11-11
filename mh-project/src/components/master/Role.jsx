@@ -11,7 +11,7 @@ function Role() {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const toggleSidebar = () => setIsCollapsed((prev) => !prev);
     const [showModal, setShowModal] = useState(false);
-    const [editMode, setEditMode] = useState(false);
+
     const [editId, setEditId] = useState(null);
     const [formData, setFormData] = useState({
         role_name: "",
@@ -94,7 +94,7 @@ function Role() {
             alert("Failed to save role!");
         }
     };
- 
+
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -119,6 +119,20 @@ function Role() {
             status: "",
         });
     };
+
+    const handleDelete = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete role?");
+        if (!confirmDelete) return;
+        try {
+            await axios.delete(`http://localhost:8000/api/roles/${id}`);
+            alert("Role deleted successfully");
+            fetchRole();
+        }
+        catch (error) {
+            console.error("Error while Delete the role", error);
+            alert("Error");
+        }
+    }
 
     const handleAddRole = () => {
         setShowModal(true);
@@ -158,7 +172,7 @@ function Role() {
                                                 <td>{test.status}</td>
                                                 <td>
                                                     <button type="button" onClick={() => handleEdit(test)} className="btn-sm btn-primary btn"><FaEdit /></button>
-                                                    <button type="button" className="btn-sm btn-danger mx-2 btn"><FaTrash /></button>
+                                                    <button type="button" className="btn-sm btn-danger mx-2 btn" onClick={() => handleDelete(test.id)}><FaTrash /></button>
                                                 </td>
                                             </tr>
                                         )

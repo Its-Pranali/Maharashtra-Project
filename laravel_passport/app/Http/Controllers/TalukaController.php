@@ -56,4 +56,17 @@ class TalukaController extends Controller
             return response()->json(['status' => false, 'message' => "error while updating taluka", 'code' => 500]);
         }
     }
+
+    public function delete($id){
+        $data=Taluka::findOrFail($id);
+        $data->status=0;
+        $result = $data->save();
+        if($result){
+            return response()->json(['status'=>true,'message'=>"Taluka is deleted successfully",'code'=>200]);
+        }
+        else{
+            return response()->json(['statue'=>false,'message'=>"Error while delete taluka",'code'=>500]);
+        }
+    }
+
 }

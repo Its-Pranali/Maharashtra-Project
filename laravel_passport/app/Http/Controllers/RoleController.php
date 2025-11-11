@@ -47,6 +47,18 @@ class RoleController extends Controller
             return response()->json(['status' => false, 'message' => "Error while update the role", 'code' => 500]);
         }
     }
+
+    public function delete($id){
+        $data=Role::findOrFail($id);
+        $data->status=0;
+        $result=$data->save();
+        if($result){
+            return response()->json(['status'=>true,'message'=>"Role deleted successfully",'code'=>200]);
+        }
+        else{
+            return response()->json(['status'=>false,'message'=>"Error while delete role",'code'=>500]);
+        }
+    }
 }
 
 

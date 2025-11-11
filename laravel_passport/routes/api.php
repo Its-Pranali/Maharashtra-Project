@@ -55,6 +55,7 @@ Route::post('/products/save', [ProductController::class, 'save']);
 Route::get('/roles', [RoleController::class, 'index']);
 Route::post('/roles/save', [RoleController::class, 'save']);
 Route::put('roles/{id}', [RoleController::class, 'update']);
+Route::delete('roles/{id}', [RoleController::class, 'delete']);
 
 Route::get('/branch', [BranchController::class, 'index']);
 Route::post('/branch/save', [BranchController::class, 'save']);
@@ -64,6 +65,7 @@ Route::delete('branch/{id}', [BranchController::class, 'delete']);
 Route::get('/taluka', [TalukaController::class, 'index']);
 Route::post('/taluka/save', [TalukaController::class, 'save']);
 Route::put('/taluka/{id}', [TalukaController::class, 'update']);
+Route::delete('/taluka/{id}', [TalukaController::class, 'delete']);
 
 Route::get('/bank', [BankController::class, 'index']);
 Route::post('/bank/save', [BankController::class, 'save']);
