@@ -57,16 +57,58 @@ class TalukaController extends Controller
         }
     }
 
-    public function delete($id){
-        $data=Taluka::findOrFail($id);
-        $data->status=0;
+    public function delete($id)
+    {
+        $data = Taluka::findOrFail($id);
+        $data->status = 0;
         $result = $data->save();
-        if($result){
-            return response()->json(['status'=>true,'message'=>"Taluka is deleted successfully",'code'=>200]);
-        }
-        else{
-            return response()->json(['statue'=>false,'message'=>"Error while delete taluka",'code'=>500]);
+        if ($result) {
+            return response()->json(['status' => true, 'message' => "Taluka is deleted successfully", 'code' => 200]);
+        } else {
+            return response()->json(['statue' => false, 'message' => "Error while delete taluka", 'code' => 500]);
         }
     }
 
+    public function getTalukasByDistrict($district_id)
+    {
+        // $district = Taluka::find($district_id);
+        $district = Taluka::select('*')->where('district',$district_id)->get()->toArray();
+        // print_r($district);
+        // die;
+        if (empty($district)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'District not found',
+                'data' => [],
+                'code' => 404
+            ]);
+        }else{
+              return response()->json([
+                'status' => false,
+                'message' => 'District found',
+                'data' => $district,
+                'code' => 200
+            ]);
+        }
+
+    //     $talukas = Taluka::where('district', $district->district) // compare by name
+    //         ->where('status', 1)
+    //         ->get();
+
+    //     if ($talukas->isNotEmpty()) {
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'Taluka fetched successfully',
+    //             'data' => $talukas,
+    //             'code' => 200
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'No taluka found for this district',
+    //             'data' => [],
+    //             'code' => 404
+    //         ]);
+    //     }
+    }
 }

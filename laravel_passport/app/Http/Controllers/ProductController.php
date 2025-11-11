@@ -30,4 +30,42 @@ class ProductController extends Controller
             'data' => $data,
         ], 201);
     }
+
+    public function update(Request $request, $id)
+    {
+        $data = Products::find($id);
+
+        if (!$data) {
+            return response()->json(['status' => false, 'message' => "data not found", 'code' => 500]);
+        }
+
+        $validator = $request->validate([
+            'product' => 'required|string|max:255',
+            'regional_name' => 'required|string|max:255',
+            'priority' => 'required|string|max:255',
+        ]);
+
+        $data->product = $validator['product'];
+        $data->regional_name = $validator['regional_name'];
+        $data->priority = $validator['priority'];
+
+        $result = $data->save();
+        if ($result) {
+            return response()->json(['status' => true, 'message' => "product updated successfully", 'code' => 200]);
+        } else {
+            return response()->json(['status' => false, 'message' => "error while updating product", 'code' => 500]);
+        }
+    }
+
+    public function delete($id)
+    {
+        $data = Products::findOrFail($id);
+        $data->status = 0;
+        $result = $data->save();
+        if ($result) {
+            return response()->json(['status' => true, 'message' => "Product deleted successfully", 'code' => 200]);
+        } else {
+            return response()->json(['status' => false, 'message' => "Error while delete the product", 'code' => 500]);
+        }
+    }
 }

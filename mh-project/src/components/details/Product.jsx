@@ -18,6 +18,7 @@ function Product() {
   const [errors, setErrors] = useState({});
   const [options, setOptions] = useState([]);
   const [products, setProducts] = useState([]);
+  const [isEdit, setIsEdit] = useState(null);
 
   useEffect(() => {
     const productOptions = ["Critical", "High", "Medium", "Low"];
@@ -77,27 +78,63 @@ function Product() {
     }
 
     try {
-      const res = await axiosInstance.post(
-        "/products/save",
-        formData,
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      if (res.status === 201 || res.status === 200) {
-        alert(" Product added successfully!");
-        setFormData({ product: "", regional_name: "", priority: "" });
-        setShowModal(false);
-        fetchProducts();
+      if (isEdit) {
+        await axiosInstance.put(`/products/${isEdit}`, formData);
+        alert("product updated successfully");
       }
-    } catch (error) {
-      console.error("Error saving product:", error);
-      if (error.response?.data?.errors) {
-        setErrors(error.response.data.errors);
-      } else {
-        alert("Something went wrong while saving data!");
+      else {
+        await axiosInstance.post("/products/save", formData);
+        alert("product saved successfully");
       }
+      handleCloseModal();
+      fetchProducts();
     }
+    catch (error) {
+      console.error("Error while save/update Product", error);
+      alert("Error");
+    }
+
+
   };
+  const handleEdit = (product) => {
+    setFormData({
+      product: product.product,
+      regional_name: product.regional_name,
+      priority: product.priority,
+    });
+    setIsEdit(product.id);
+    setErrors({});
+    setShowModal(true);
+  }
+
+  const handleReset = () => {
+    setFormData({
+      product: "",
+      regional_name: "",
+      priority: "",
+    });
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    handleReset();
+    setIsEdit(null);
+    setErrors({});
+  }
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete product");
+    if (!confirmDelete) return;
+    try {
+      await axiosInstance.delete(`products/${id}`);
+      alert("product deleted successfully");
+      fetchProducts();
+    }
+    catch (error) {
+      console.error("Error while delete the product", error);
+      alert("Error while delete the product");
+    }
+  }
 
 
   return (
@@ -138,10 +175,10 @@ function Product() {
                         <td>{item.regional_name}</td>
                         <td>{item.priority}</td>
                         <td className="text-center">
-                          <button className="btn btn-sm btn-primary me-2" title="Edit" >
+                          <button className="btn btn-sm btn-primary me-2" title="Edit" onClick={() => handleEdit(item)}>
                             <FaEdit />
                           </button>
-                          <button className="btn btn-sm btn-danger" title="Delete" >
+                          <button className="btn btn-sm btn-danger" title="Delete" onClick={() => handleDelete(item.id)}>
                             <FaTrash />
                           </button>
                         </td>

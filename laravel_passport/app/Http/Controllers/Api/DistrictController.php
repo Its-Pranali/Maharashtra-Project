@@ -11,6 +11,9 @@ class DistrictController extends Controller
     public function index()
     {
         return response()->json(District::select('*')->where('status', 1)->get());
+        // $data = response()->json(District::select('*')->where('status', 1)->get()->toArray());
+        // echo "<pre>";
+        // print_r($data);die;
     }
 
     public function store(Request $request)

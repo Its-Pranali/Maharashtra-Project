@@ -224,7 +224,7 @@ function Taluka() {
                                                         <option value="">Select District</option>
                                                         {Array.isArray(districts) && districts.length > 0 ? (
                                                             districts.map((test, index) =>
-                                                                <option key={index} value={test.district}>{test.district}</option>
+                                                                <option key={index} value={test.id}>{test.district}</option>
                                                             )
                                                         ) : (
                                                             <option>Data not found</option>

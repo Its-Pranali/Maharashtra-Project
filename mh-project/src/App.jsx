@@ -19,6 +19,7 @@ import Bank from "./components/master/Bank";
 import Module from "./components/details/Module";
 import Modules from "./components/details/Module";
 // import axiosBaseUrl from "./api/axiosConfig";
+import Village from "./components/master/Village";
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
       <Route path="/taluka" element={<Taluka />} />
       <Route path="/bank" element={<Bank />} />
       <Route path="/modules" element={<Modules />} />
+      <Route path="/village" element={<Village />} />
       {/* <Route path="/branch" element={<Branch />} /> */}
     </Routes>
   );
