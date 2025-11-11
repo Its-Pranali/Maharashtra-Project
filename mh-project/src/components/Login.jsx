@@ -46,7 +46,7 @@ function Login() {
 
         try {
             axios.defaults.withCredentials = true;
-            const response = await axios.post("http://127.0.0.1:8000/api/login", formData);
+            const response = await axios.post("http://localhost/Maharashtra-Project/laravel_passport/api/login", formData);
 
             console.log("Login API Response:", response.data);
 
