@@ -1,7 +1,15 @@
 import Main from "../layout/Main";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import {
+    FaTrash,
+    FaEdit,
+    FaPlus,
+    FaSync,
+    FaUniversity,
+    FaMapMarkerAlt,
+    FaRegClock,
+} from "react-icons/fa";
 import $ from "jquery";
 import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/dataTables.dataTables.min.css";
@@ -20,15 +28,21 @@ function Bank() {
     const [errors, setErrors] = useState({});
     const [districts, setDistricts] = useState([]);
     const [banks, setBanks] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [lastSync, setLastSync] = useState(null);
     const [isEdit, setIsEdit] = useState(null);
 
 
     const fetchBanks = async () => {
         try {
+            setIsLoading(true);
             const res = await axiosInstance.get("/bank");
             setBanks(res.data.message || []);
+            setLastSync(new Date());
         } catch (error) {
             console.error("Error while fetching banks", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -158,22 +172,121 @@ function Bank() {
             alert("Error while Delete the bank");
         }
     }
+    const totalBanks = banks.length;
+    const totalDistricts = [...new Set(banks.map((bank) => bank.district))].length;
+
+    const formattedSyncTime = lastSync
+        ? lastSync.toLocaleString("en-IN", {
+              weekday: "short",
+              hour: "2-digit",
+              minute: "2-digit",
+              day: "2-digit",
+              month: "short",
+          })
+        : "Not synced yet";
+
     return (
         <Main isCollapsed={isCollapsed} toggleSidebar={toggleSidebar}>
             <div className="container-fluid py-3">
                 <div className="row">
-                    <div className="card py-3">
-                        <div className="d-flex justify-content-between align-items-center">
-                            <div className="card-title fw-bold fs-5">Bank List</div>
-                            <button className="btn btn-sm btn-primary" onClick={handleAddBank}>
-                                Add Bank
-                            </button>
+                    <div className="card border-0 shadow-sm bg-primary text-white">
+                        <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                            <div>
+                                <p className="text-uppercase small mb-1 opacity-75">
+                                    Master Management
+                                </p>
+                                <div className="card-title fw-bold fs-4 mb-0">Bank Directory</div>
+                                <p className="mb-0 opacity-75">
+                                    Maintain bank masters, districts, and regional mappings from a
+                                    single dashboard.
+                                </p>
+                            </div>
+                            <div className="d-flex mt-3 mt-md-0 gap-2">
+                                <button
+                                    type="button"
+                                    className="btn btn-light text-primary d-flex align-items-center gap-2"
+                                    onClick={fetchBanks}
+                                    disabled={isLoading}
+                                >
+                                    <FaSync className={isLoading ? "fa-spin" : ""} />
+                                    {isLoading ? "Refreshing..." : "Refresh"}
+                                </button>
+                                <button
+                                    className="btn btn-dark d-flex align-items-center gap-2"
+                                    onClick={handleAddBank}
+                                >
+                                    <FaPlus /> Add Bank
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="row mt-2">
-                    <div className="card py-3">
+                <div className="row mt-3 gy-3">
+                    <div className="col-md-4">
+                        <div className="card shadow-sm border-0 h-100">
+                            <div className="card-body d-flex gap-3 align-items-center">
+                                <div className="rounded-circle bg-primary-subtle text-primary p-3">
+                                    <FaUniversity size={24} />
+                                </div>
+                                <div>
+                                    <p className="text-muted text-uppercase small mb-1">Total Banks</p>
+                                    <div className="fs-4 fw-bold">{totalBanks}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="card shadow-sm border-0 h-100">
+                            <div className="card-body d-flex gap-3 align-items-center">
+                                <div className="rounded-circle bg-success-subtle text-success p-3">
+                                    <FaMapMarkerAlt size={24} />
+                                </div>
+                                <div>
+                                    <p className="text-muted text-uppercase small mb-1">
+                                        District Coverage
+                                    </p>
+                                    <div className="fs-4 fw-bold">{totalDistricts}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="card shadow-sm border-0 h-100">
+                            <div className="card-body d-flex gap-3 align-items-center">
+                                <div className="rounded-circle bg-warning-subtle text-warning p-3">
+                                    <FaRegClock size={24} />
+                                </div>
+                                <div>
+                                    <p className="text-muted text-uppercase small mb-1">
+                                        Last Synced
+                                    </p>
+                                    <div className="fw-bold">{formattedSyncTime}</div>
+                                    {isLoading && (
+                                        <small className="text-muted">Fetching latest records…</small>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="row mt-3">
+                    <div className="card py-3 border-0 shadow-sm">
+                        <div className="d-flex justify-content-between align-items-center px-3 pb-2 border-bottom">
+                            <div>
+                                <h6 className="mb-0 fw-bold">Bank Master Table</h6>
+                                <small className="text-muted">
+                                    Search, edit or delete banks within the table below
+                                </small>
+                            </div>
+                            <button
+                                className="btn btn-outline-primary btn-sm d-flex align-items-center gap-2"
+                                onClick={handleAddBank}
+                            >
+                                <FaPlus size={12} /> Add Bank
+                            </button>
+                        </div>
                         <div className="table-responsive">
                             <table
                                 id="bankTable"
@@ -189,17 +302,33 @@ function Bank() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {banks.length > 0 ? (
+                                    {isLoading ? (
+                                        <tr>
+                                            <td colSpan="5" className="text-center py-4">
+                                                Fetching banks...
+                                            </td>
+                                        </tr>
+                                    ) : banks.length > 0 ? (
                                         banks.map((bank, index) => (
                                             <tr key={bank.id}>
                                                 <td>{index + 1}</td>
-                                                <td>{bank.district}</td>
-                                                <td>{bank.bank_name}</td>
-                                                <td>{bank.regional_name}</td>
+                                                <td>
+                                                    <span className="badge text-bg-light px-3 py-2">
+                                                        {bank.district}
+                                                    </span>
+                                                </td>
+                                                <td className="fw-semibold text-dark">
+                                                    {bank.bank_name}
+                                                </td>
+                                                <td>
+                                                    <span className="badge text-bg-primary px-3 py-2">
+                                                        {bank.regional_name}
+                                                    </span>
+                                                </td>
                                                 <td>
                                                     <button
                                                         type="button"
-                                                        className="btn btn-primary btn-sm"
+                                                        className="btn btn-outline-primary btn-sm"
                                                         onClick={() => handleEdit(bank)}
                                                     >
                                                         <FaEdit />
@@ -215,8 +344,10 @@ function Bank() {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="5" align="center">
-                                                No banks found.
+                                            <td colSpan="5" align="center" className="py-4">
+                                                <div className="text-muted">
+                                                    No banks found. Try adding a new bank to get started.
+                                                </div>
                                             </td>
                                         </tr>
                                     )}

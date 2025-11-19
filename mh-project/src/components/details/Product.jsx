@@ -93,8 +93,6 @@ function Product() {
       console.error("Error while save/update Product", error);
       alert("Error");
     }
-
-
   };
   const handleEdit = (product) => {
     setFormData({

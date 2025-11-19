@@ -12,6 +12,7 @@ use App\Http\Controllers\TalukaController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\VillageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,7 +73,9 @@ Route::get('/taluka/by-district/{district_id}', [TalukaController::class, 'getTa
 
 // Route::put('/talukas/{district_id}', [TalukaController::class, 'getTalukasByDistrict']);
 
-
+Route::get('/village',[VillageController::class,'index']);
+Route::post('/village/save',[VillageController::class,'save']);
+Route::put('/village/{id}',[VillageController::class,'update']);
 
 Route::get('/bank', [BankController::class, 'index']);
 Route::post('/bank/save', [BankController::class, 'save']);
